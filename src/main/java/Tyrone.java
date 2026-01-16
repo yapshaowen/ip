@@ -30,14 +30,14 @@ public class Tyrone {
                 break;
             }
 
-            /*if (input.equals("list")) {
+            if (input.equals("list")) {
                 printLine();
                 for (int i = 0; i < taskCount; i++) {
                     System.out.println((i + 1) + ". " + tasks[i]);
                 }
                 printLine();
                 continue;
-            }*/
+            }
 
             tasks[taskCount] = input;
             taskCount++;
