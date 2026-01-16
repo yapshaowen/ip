@@ -6,8 +6,7 @@ public class Tyrone {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String[] tasks = new String[MAX_TASKS];
-        boolean[] done = new boolean[MAX_TASKS];
+        Task[] tasks = new Task[MAX_TASKS];
         int taskCount = 0;
 
         String logo =
@@ -33,14 +32,39 @@ public class Tyrone {
 
             if (input.equals("list")) {
                 printLine();
+                System.out.println("Here ya go dawg!\n");
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println((i + 1) + ".[" + (done[i] ? "X" : " ") + "] " + tasks[i]);
+                    System.out.println((i + 1) + "." + tasks[i]);
                 }
                 printLine();
                 continue;
             }
 
-            tasks[taskCount] = input;
+            if (input.startsWith("mark ")) {
+                int idx = Integer.parseInt(input.substring(5).trim()) - 1;
+                if (idx != -1) {
+                    tasks[idx].mark();
+                    printLine();
+                    System.out.println("I gotchu! I've marked this task as done:");
+                    System.out.println("  " + tasks[idx]);
+                    printLine();
+                }
+                continue;
+            }
+
+            if (input.startsWith("unmark ")) {
+                int idx = Integer.parseInt(input.substring(7).trim()) - 1;
+                if (idx != -1) {
+                    tasks[idx].unmark();
+                    printLine();
+                    System.out.println("Gotchu dawg, I've unmarked this task:");
+                    System.out.println("  " + tasks[idx]);
+                    printLine();
+                }
+                continue;
+            }
+
+            tasks[taskCount] = new Task(input);
             taskCount++;
 
             printLine();
