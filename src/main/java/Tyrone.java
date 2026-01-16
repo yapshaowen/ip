@@ -7,6 +7,7 @@ public class Tyrone {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         String[] tasks = new String[MAX_TASKS];
+        boolean[] done = new boolean[MAX_TASKS];
         int taskCount = 0;
 
         String logo =
@@ -33,7 +34,7 @@ public class Tyrone {
             if (input.equals("list")) {
                 printLine();
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println((i + 1) + ". " + tasks[i]);
+                    System.out.println((i + 1) + ".[" + (done[i] ? "X" : " ") + "] " + tasks[i]);
                 }
                 printLine();
                 continue;
