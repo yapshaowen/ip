@@ -2,12 +2,10 @@ import java.util.*;
 
 public class Tyrone {
     private static final String LINE = "____________________________________________________________";
-    private static final int MAX_TASKS = 100;
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Task[] tasks = new Task[MAX_TASKS];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         String logo =
                 " _______   ______   ___  _   _ _____ \n"
@@ -25,7 +23,7 @@ public class Tyrone {
             String input = sc.nextLine().trim();
 
             try {
-                taskCount = handleCommand(input, tasks, taskCount);
+                handleCommand(input, tasks);
                 if (input.equals("bye")) {
                     break;
                 }
@@ -37,42 +35,56 @@ public class Tyrone {
         sc.close();
     }
 
-    private static int handleCommand(String input, Task[] tasks, int taskCount) throws TyroneException {
+    private static void handleCommand(String input, ArrayList<Task> tasks) throws TyroneException {
         if (input.equals("bye")) {
             printLine();
             System.out.println("Bye dawg!");
             printLine();
-            return taskCount;
+            return;
         }
 
         if (input.equals("list")) {
             printLine();
-            System.out.println("Here ya go dawg!");
-            for (int i = 0; i < taskCount; i++) {
-                System.out.println((i + 1) + "." + tasks[i]);
+            System.out.println("Here are the tasks in your list:");
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println((i + 1) + "." + tasks.get(i));
             }
             printLine();
-            return taskCount;
+            return;
         }
 
         if (input.startsWith("mark ")) {
-            int idx = parseIndex(input.substring(5), taskCount);
-            tasks[idx].mark();
+            int idx = parseIndex(input.substring(5), tasks.size());
+            tasks.get(idx).mark();
+
             printLine();
             System.out.println("I gotchu! I've marked this task as done:");
-            System.out.println("  " + tasks[idx]);
+            System.out.println("  " + tasks.get(idx));
             printLine();
-            return taskCount;
+            return;
         }
 
         if (input.startsWith("unmark ")) {
-            int idx = parseIndex(input.substring(7), taskCount);
-            tasks[idx].unmark();
+            int idx = parseIndex(input.substring(7), tasks.size());
+            tasks.get(idx).unmark();
+
             printLine();
             System.out.println("Gotchu dawg, I've unmarked this task:");
-            System.out.println("  " + tasks[idx]);
+            System.out.println("  " + tasks.get(idx));
             printLine();
-            return taskCount;
+            return;
+        }
+
+        if (input.startsWith("delete ")) {
+            int idx = parseIndex(input.substring(7), tasks.size());
+            Task removed = tasks.remove(idx);
+
+            printLine();
+            System.out.println("Noted. I've removed this task:");
+            System.out.println("  " + removed);
+            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+            printLine();
+            return;
         }
 
         if (input.equals("todo") || input.startsWith("todo ")) {
@@ -80,7 +92,8 @@ public class Tyrone {
             if (desc.isEmpty()) {
                 throw new TyroneException("Todo cannot be empty. Use: todo <task>");
             }
-            return addTask(tasks, taskCount, new Todo(desc));
+            addTask(tasks, new Todo(desc));
+            return;
         }
 
         if (input.equals("deadline") || input.startsWith("deadline ")) {
@@ -90,13 +103,16 @@ public class Tyrone {
             }
             String desc = input.substring(9, byPos).trim();
             String by = input.substring(byPos + 5).trim();
+
             if (desc.isEmpty()) {
                 throw new TyroneException("Deadline task cannot be empty. Use: deadline <task> /by <time>");
             }
             if (by.isEmpty()) {
                 throw new TyroneException("Deadline /by cannot be empty. Use: deadline <task> /by <time>");
             }
-            return addTask(tasks, taskCount, new Deadline(desc, by));
+
+            addTask(tasks, new Deadline(desc, by));
+            return;
         }
 
         if (input.equals("event") || input.startsWith("event ")) {
@@ -120,11 +136,11 @@ public class Tyrone {
                 throw new TyroneException("Event /to cannot be empty. Use: event <task> /from <start> /to <end>");
             }
 
-            return addTask(tasks, taskCount, new Event(desc, from, to));
+            addTask(tasks, new Event(desc, from, to));
+            return;
         }
 
-        // Minimal requirement: unknown commands like "blah"
-        throw new TyroneException("I ain't understand that. Try: todo, deadline, event, list, mark, unmark, bye");
+        throw new TyroneException("I ain't understand that. Try: todo, deadline, event, list, mark, unmark, delete, bye");
     }
 
     private static int parseIndex(String s, int taskCount) throws TyroneException {
@@ -132,9 +148,11 @@ public class Tyrone {
         if (trimmed.isEmpty()) {
             throw new TyroneException("Give me a task number, my guy.");
         }
+
         try {
             int oneBased = Integer.parseInt(trimmed);
             int idx = oneBased - 1;
+
             if (idx < 0 || idx >= taskCount) {
                 throw new TyroneException("That task number ain't valid. Use 1 to " + taskCount + ".");
             }
@@ -144,21 +162,14 @@ public class Tyrone {
         }
     }
 
-    private static int addTask(Task[] tasks, int taskCount, Task task) throws TyroneException {
-        if (taskCount >= MAX_TASKS) {
-            throw new TyroneException("My bad bro, I can only store up to " + MAX_TASKS + " tasks.");
-        }
-
-        tasks[taskCount] = task;
-        taskCount++;
+    private static void addTask(ArrayList<Task> tasks, Task task) {
+        tasks.add(task);
 
         printLine();
         System.out.println("Gotchu my guy. I added this task:");
         System.out.println("  " + task);
-        System.out.println("Now you got " + taskCount + " tasks in yo list");
+        System.out.println("Now you got " + tasks.size() + " tasks in yo list");
         printLine();
-
-        return taskCount;
     }
 
     private static void printError(String msg) {
