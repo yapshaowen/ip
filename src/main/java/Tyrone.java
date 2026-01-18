@@ -100,13 +100,6 @@ public class Tyrone {
                 taskCount = addTask(tasks, taskCount, new Event(desc, from, to));
                 continue;
             }
-
-            tasks[taskCount] = new Task(input);
-            taskCount++;
-
-            printLine();
-            System.out.println("added: " + input);
-            printLine();
         }
 
         sc.close();
