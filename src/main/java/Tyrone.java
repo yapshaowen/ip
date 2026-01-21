@@ -1,11 +1,14 @@
 import java.util.*;
+import java.nio.file.*;
 
 public class Tyrone {
     private static final String LINE = "____________________________________________________________";
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        Path dataPath = Paths.get("data", "tyrone.txt");
+        Storage storage = new Storage(dataPath);
+        ArrayList<Task> tasks = storage.load();
 
         String logo =
                 " _______   ______   ___  _   _ _____ \n"
@@ -23,7 +26,7 @@ public class Tyrone {
             String input = sc.nextLine().trim();
 
             try {
-                handleCommand(input, tasks);
+                handleCommand(input, tasks, storage);
                 if (input.equals("bye")) {
                     break;
                 }
@@ -35,7 +38,7 @@ public class Tyrone {
         sc.close();
     }
 
-    private static void handleCommand(String input, ArrayList<Task> tasks) throws TyroneException {
+    private static void handleCommand(String input, ArrayList<Task> tasks, Storage storage) throws TyroneException {
         if (input.equals("bye")) {
             printLine();
             System.out.println("Bye dawg!");
@@ -56,6 +59,7 @@ public class Tyrone {
         if (input.startsWith("mark ")) {
             int idx = parseIndex(input.substring(5), tasks.size());
             tasks.get(idx).mark();
+            storage.save(tasks);
 
             printLine();
             System.out.println("I gotchu! I've marked this task as done:");
@@ -67,6 +71,7 @@ public class Tyrone {
         if (input.startsWith("unmark ")) {
             int idx = parseIndex(input.substring(7), tasks.size());
             tasks.get(idx).unmark();
+            storage.save(tasks);
 
             printLine();
             System.out.println("Gotchu dawg, I've unmarked this task:");
@@ -78,6 +83,7 @@ public class Tyrone {
         if (input.startsWith("delete ")) {
             int idx = parseIndex(input.substring(7), tasks.size());
             Task removed = tasks.remove(idx);
+            storage.save(tasks);
 
             printLine();
             System.out.println("Noted. I've removed this task:");
@@ -92,7 +98,7 @@ public class Tyrone {
             if (desc.isEmpty()) {
                 throw new TyroneException("Todo cannot be empty. Use: todo <task>");
             }
-            addTask(tasks, new Todo(desc));
+            addTask(tasks, new Todo(desc), storage);
             return;
         }
 
@@ -111,7 +117,7 @@ public class Tyrone {
                 throw new TyroneException("Deadline /by cannot be empty. Use: deadline <task> /by <time>");
             }
 
-            addTask(tasks, new Deadline(desc, by));
+            addTask(tasks, new Deadline(desc, by), storage);
             return;
         }
 
@@ -136,7 +142,7 @@ public class Tyrone {
                 throw new TyroneException("Event /to cannot be empty. Use: event <task> /from <start> /to <end>");
             }
 
-            addTask(tasks, new Event(desc, from, to));
+            addTask(tasks, new Event(desc, from, to), storage);
             return;
         }
 
@@ -162,8 +168,9 @@ public class Tyrone {
         }
     }
 
-    private static void addTask(ArrayList<Task> tasks, Task task) {
+    private static void addTask(ArrayList<Task> tasks, Task task, Storage storage) throws TyroneException {
         tasks.add(task);
+        storage.save(tasks);
 
         printLine();
         System.out.println("Gotchu my guy. I added this task:");
