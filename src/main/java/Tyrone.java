@@ -1,5 +1,9 @@
-import java.util.*;
-import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Tyrone {
     private static final String LINE = "____________________________________________________________";
@@ -108,16 +112,21 @@ public class Tyrone {
                 throw new TyroneException("Invalid deadline bro! Use: deadline <task> /by <time>");
             }
             String desc = input.substring(9, byPos).trim();
-            String by = input.substring(byPos + 5).trim();
+            String byStr = input.substring(byPos + 5).trim();
 
             if (desc.isEmpty()) {
                 throw new TyroneException("Deadline task cannot be empty. Use: deadline <task> /by <time>");
             }
-            if (by.isEmpty()) {
+            if (byStr.isEmpty()) {
                 throw new TyroneException("Deadline /by cannot be empty. Use: deadline <task> /by <time>");
             }
 
-            addTask(tasks, new Deadline(desc, by), storage);
+            try {
+                LocalDate by = LocalDate.parse(byStr);
+                addTask(tasks, new Deadline(desc, by), storage);
+            } catch (DateTimeParseException e) {
+                throw new TyroneException("Invalid date format. Use yyyy-mm-dd (e.g., 2019-10-15).");
+            }
             return;
         }
 
