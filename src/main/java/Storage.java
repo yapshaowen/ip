@@ -66,7 +66,7 @@ public class Storage {
 
         if (t instanceof Deadline) {
             Deadline d = (Deadline) t;
-            return "D | " + done + " | " + t.getDesc() + " | " + d.getBy();
+            return "D | " + done + " | " + t.getDesc() + " | " + d.getBy().toString();
         }
 
         if (t instanceof Event) {
@@ -115,7 +115,8 @@ public class Storage {
                 if (parts.length < 4) {
                     return null;
                 }
-                t = new Deadline(desc, parts[3].trim());
+                LocalDate by = LocalDate.parse(parts[3].trim());
+                t = new Deadline(desc, by);
             } else if (type.equals("E")) {
                 if (parts.length < 5) {
                     return null;
