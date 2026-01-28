@@ -83,6 +83,22 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Shows all tasks that match a keyword search.
+     */
+    public void showFindResults(TaskList matches) {
+        showLine();
+        if (matches.size() == 0) {
+            System.out.println("No matching tasks found.");
+        } else {
+            System.out.println("Here are the matching tasks in your list:");
+            for (int i = 0; i < matches.size(); i++) {
+                System.out.println((i + 1) + "." + matches.get(i));
+            }
+        }
+        showLine();
+    }
+
     public void close() {
         sc.close();
     }

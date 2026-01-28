@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException;
 public class Parser {
 
     public enum CommandType {
-        BYE, LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE
+        BYE, LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, FIND
     }
 
     public static class Command {
@@ -15,37 +15,42 @@ public class Parser {
         public final LocalDate by;
         public final String from;
         public final String to;
-
-        // Used by MARK/UNMARK/DELETE (0-based)
+        public final String keyword;
         public final int index;
 
-        private Command(CommandType type, String description, LocalDate by, String from, String to, int index) {
+        private Command(CommandType type, String description, LocalDate by, String from,
+                        String to, int index, String keyword) {
             this.type = type;
             this.description = description;
             this.by = by;
             this.from = from;
             this.to = to;
             this.index = index;
+            this.keyword = keyword;
         }
 
         public static Command simple(CommandType type) {
-            return new Command(type, null, null, null, null, -1);
+            return new Command(type, null, null, null, null, -1, null);
         }
 
         public static Command todo(String desc) {
-            return new Command(CommandType.TODO, desc, null, null, null, -1);
+            return new Command(CommandType.TODO, desc, null, null, null, -1, null);
         }
 
         public static Command deadline(String desc, LocalDate by) {
-            return new Command(CommandType.DEADLINE, desc, by, null, null, -1);
+            return new Command(CommandType.DEADLINE, desc, by, null, null, -1, null);
         }
 
         public static Command event(String desc, String from, String to) {
-            return new Command(CommandType.EVENT, desc, null, from, to, -1);
+            return new Command(CommandType.EVENT, desc, null, from, to, -1, null);
         }
 
         public static Command indexCmd(CommandType type, int idx) {
-            return new Command(type, null, null, null, null, idx);
+            return new Command(type, null, null, null, null, idx, null);
+        }
+
+        public static Command find(String keyword) {
+            return new Command(CommandType.FIND, null, null, null, null, -1, keyword);
         }
     }
 
@@ -59,7 +64,14 @@ public class Parser {
             return Command.simple(CommandType.LIST);
         }
 
-        // todo <desc>
+        if (trimmed.equals("find") || trimmed.startsWith("find ")) {
+            String keyword = trimmed.length() == 4 ? "" : trimmed.substring(5).trim();
+            if (keyword.isEmpty()) {
+                throw new TyroneException("The keyword of a find command cannot be empty.");
+            }
+            return Command.find(keyword);
+        }
+
         if (trimmed.equals("todo") || trimmed.startsWith("todo ")) {
             String desc = trimmed.length() == 4 ? "" : trimmed.substring(5).trim();
             if (desc.isEmpty()) {
@@ -68,7 +80,6 @@ public class Parser {
             return Command.todo(desc);
         }
 
-        // deadline <desc> /by yyyy-mm-dd
         if (trimmed.equals("deadline") || trimmed.startsWith("deadline ")) {
             int byPos = trimmed.indexOf(" /by ");
             if (byPos == -1) {
@@ -93,7 +104,6 @@ public class Parser {
             }
         }
 
-        // event <desc> /from <start> /to <end>  (still strings)
         if (trimmed.equals("event") || trimmed.startsWith("event ")) {
             int fromPos = trimmed.indexOf(" /from ");
             int toPos = trimmed.indexOf(" /to ");
@@ -118,19 +128,16 @@ public class Parser {
             return Command.event(desc, from, to);
         }
 
-        // mark <index>
         if (trimmed.startsWith("mark ")) {
             int idx = parseIndex(trimmed.substring(5), taskCount);
             return Command.indexCmd(CommandType.MARK, idx);
         }
 
-        // unmark <index>
         if (trimmed.startsWith("unmark ")) {
             int idx = parseIndex(trimmed.substring(7), taskCount);
             return Command.indexCmd(CommandType.UNMARK, idx);
         }
 
-        // delete <index>
         if (trimmed.startsWith("delete ")) {
             int idx = parseIndex(trimmed.substring(7), taskCount);
             return Command.indexCmd(CommandType.DELETE, idx);
