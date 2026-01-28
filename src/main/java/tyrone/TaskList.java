@@ -2,15 +2,9 @@ package tyrone;
 
 import java.util.ArrayList;
 
-public class TaskList {
-    private final ArrayList<Task> tasks;
-
+public record TaskList(ArrayList<Task> tasks) {
     public TaskList() {
-        this.tasks = new ArrayList<>();
-    }
-
-    public TaskList(ArrayList<Task> tasks) {
-        this.tasks = tasks;
+        this(new ArrayList<>());
     }
 
     public int size() {
@@ -35,9 +29,5 @@ public class TaskList {
 
     public void unmark(int index) {
         tasks.get(index).unmark();
-    }
-
-    public ArrayList<Task> getTasks() {
-        return tasks;
     }
 }

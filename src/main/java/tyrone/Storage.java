@@ -4,9 +4,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
 
 public class Storage {
     private final Path filePath;
@@ -66,13 +66,11 @@ public class Storage {
             return "T | " + done + " | " + t.getDesc();
         }
 
-        if (t instanceof Deadline) {
-            Deadline d = (Deadline) t;
+        if (t instanceof Deadline d) {
             return "D | " + done + " | " + t.getDesc() + " | " + d.getBy().toString();
         }
 
-        if (t instanceof Event) {
-            Event e = (Event) t;
+        if (t instanceof Event e) {
             return "E | " + done + " | " + t.getDesc() + " | " + e.getFrom() + " | " + e.getTo();
         }
 
