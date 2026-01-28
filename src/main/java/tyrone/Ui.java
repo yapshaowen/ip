@@ -80,7 +80,7 @@ public class Ui {
      * @param task
      * @param count
      */
-    public void showAdd(Task task,int count) {
+    public void showAdd(Task task, int count) {
         showLine();
         System.out.println("Gotchu bro! I added this task:");
         System.out.println(" " + task);

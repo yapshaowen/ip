@@ -46,37 +46,37 @@ public class Tyrone {
 
                     case TODO:
                         tasks.add(new Todo(cmd.description));
-                        storage.save(tasks.getTasks());
+                        storage.save(tasks.tasks());
                         ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
                         break;
 
                     case DEADLINE:
                         tasks.add(new Deadline(cmd.description, cmd.by));
-                        storage.save(tasks.getTasks());
+                        storage.save(tasks.tasks());
                         ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
                         break;
 
                     case EVENT:
                         tasks.add(new Event(cmd.description, cmd.from, cmd.to));
-                        storage.save(tasks.getTasks());
+                        storage.save(tasks.tasks());
                         ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
                         break;
 
                     case MARK:
                         tasks.mark(cmd.index);
-                        storage.save(tasks.getTasks());
+                        storage.save(tasks.tasks());
                         ui.showMark(tasks.get(cmd.index));
                         break;
 
                     case UNMARK:
                         tasks.unmark(cmd.index);
-                        storage.save(tasks.getTasks());
+                        storage.save(tasks.tasks());
                         ui.showUnmark(tasks.get(cmd.index));
                         break;
 
                     case DELETE:
                         Task removed = tasks.remove(cmd.index);
-                        storage.save(tasks.getTasks());
+                        storage.save(tasks.tasks());
                         ui.showDelete(removed, tasks.size());
                         break;
 
