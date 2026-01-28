@@ -34,4 +34,21 @@ public class ParserTest {
         );
         assertTrue(e.getMessage().toLowerCase().contains("out of range"));
     }
+
+    @Test
+    public void parse_find_valid_parsesKeyword() throws Exception {
+        Parser.Command cmd = Parser.parse("find book", 0);
+        assertEquals(Parser.CommandType.FIND, cmd.type);
+        assertEquals("book", cmd.keyword);
+    }
+
+
+    @Test
+    public void parse_find_empty_throws() {
+        TyroneException e = assertThrows(
+                TyroneException.class,
+                () -> Parser.parse("find", 0)
+        );
+        assertTrue(e.getMessage().toLowerCase().contains("cannot be empty"));
+    }
 }

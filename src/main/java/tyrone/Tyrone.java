@@ -80,6 +80,11 @@ public class Tyrone {
                         ui.showDelete(removed, tasks.size());
                         break;
 
+                    case FIND:
+                        TaskList matches = tasks.find(cmd.keyword);
+                        ui.showFindResults(matches);
+                        break;
+
                     default:
                         throw new TyroneException("Unknown command.");
                 }

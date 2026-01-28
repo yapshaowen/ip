@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException;
 public class Parser {
 
     public enum CommandType {
-        BYE, LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE
+        BYE, LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, FIND
     }
 
     /**
@@ -18,15 +18,18 @@ public class Parser {
         public final LocalDate by;
         public final String from;
         public final String to;
+        public final String keyword;
         public final int index;
 
-        private Command(CommandType type, String description, LocalDate by, String from, String to, int index) {
+        private Command(CommandType type, String description, LocalDate by, String from,
+                        String to, int index, String keyword) {
             this.type = type;
             this.description = description;
             this.by = by;
             this.from = from;
             this.to = to;
             this.index = index;
+            this.keyword = keyword;
         }
 
         /**
@@ -36,7 +39,7 @@ public class Parser {
          * @return
          */
         public static Command simple(CommandType type) {
-            return new Command(type, null, null, null, null, -1);
+            return new Command(type, null, null, null, null, -1, null);
         }
 
         /**
@@ -46,7 +49,7 @@ public class Parser {
          * @return
          */
         public static Command todo(String desc) {
-            return new Command(CommandType.TODO, desc, null, null, null, -1);
+            return new Command(CommandType.TODO, desc, null, null, null, -1, null);
         }
 
         /**
@@ -57,7 +60,7 @@ public class Parser {
          * @return
          */
         public static Command deadline(String desc, LocalDate by) {
-            return new Command(CommandType.DEADLINE, desc, by, null, null, -1);
+            return new Command(CommandType.DEADLINE, desc, by, null, null, -1, null);
         }
 
         /**
@@ -69,7 +72,7 @@ public class Parser {
          * @return
          */
         public static Command event(String desc, String from, String to) {
-            return new Command(CommandType.EVENT, desc, null, from, to, -1);
+            return new Command(CommandType.EVENT, desc, null, from, to, -1, null);
         }
 
         /**
@@ -80,7 +83,11 @@ public class Parser {
          * @return
          */
         public static Command indexCmd(CommandType type, int idx) {
-            return new Command(type, null, null, null, null, idx);
+            return new Command(type, null, null, null, null, idx, null);
+        }
+
+        public static Command find(String keyword) {
+            return new Command(CommandType.FIND, null, null, null, null, -1, keyword);
         }
     }
 
@@ -100,6 +107,14 @@ public class Parser {
         }
         if (trimmed.equals("list")) {
             return Command.simple(CommandType.LIST);
+        }
+
+        if (trimmed.equals("find") || trimmed.startsWith("find ")) {
+            String keyword = trimmed.length() == 4 ? "" : trimmed.substring(5).trim();
+            if (keyword.isEmpty()) {
+                throw new TyroneException("The keyword of a find command cannot be empty.");
+            }
+            return Command.find(keyword);
         }
 
         if (trimmed.equals("todo") || trimmed.startsWith("todo ")) {
@@ -134,7 +149,6 @@ public class Parser {
             }
         }
 
-        // event <desc> /from <start> /to <end>  (still strings)
         if (trimmed.equals("event") || trimmed.startsWith("event ")) {
             int fromPos = trimmed.indexOf(" /from ");
             int toPos = trimmed.indexOf(" /to ");
