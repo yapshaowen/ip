@@ -15,6 +15,11 @@ public class Storage {
         this.filePath = filePath;
     }
 
+    /**
+     * Creates an index-based command (e.g., mark/unmark/delete).
+     *
+     * @return
+     */
     public ArrayList<Task> load() {
         ArrayList<Task> tasks = new ArrayList<>();
 
@@ -41,6 +46,12 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Loads tasks from disk; returns an empty list if the file is missing.
+     *
+     * @param tasks
+     * @throws TyroneException
+     */
     public void save(ArrayList<Task> tasks) throws TyroneException {
         try {
             Path parent = filePath.getParent();

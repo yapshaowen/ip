@@ -9,14 +9,15 @@ public class Parser {
         BYE, LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE
     }
 
+    /**
+     * Represents a parsed user command and its associated arguments.
+     */
     public static class Command {
         public final CommandType type;
         public final String description;
         public final LocalDate by;
         public final String from;
         public final String to;
-
-        // Used by MARK/UNMARK/DELETE (0-based)
         public final int index;
 
         private Command(CommandType type, String description, LocalDate by, String from, String to, int index) {
@@ -28,27 +29,69 @@ public class Parser {
             this.index = index;
         }
 
+        /**
+         * Creates a command with no extra arguments (e.g., bye/list).
+         *
+         * @param type
+         * @return
+         */
         public static Command simple(CommandType type) {
             return new Command(type, null, null, null, null, -1);
         }
 
+        /**
+         * Creates a command with no extra arguments (e.g., bye/list).
+         *
+         * @param desc
+         * @return
+         */
         public static Command todo(String desc) {
             return new Command(CommandType.TODO, desc, null, null, null, -1);
         }
 
+        /**
+         * Creates a todo command with the given description.
+         *
+         * @param desc
+         * @param by
+         * @return
+         */
         public static Command deadline(String desc, LocalDate by) {
             return new Command(CommandType.DEADLINE, desc, by, null, null, -1);
         }
 
+        /**
+         * Creates an event command with the given description and time range.
+         *
+         * @param desc
+         * @param from
+         * @param to
+         * @return
+         */
         public static Command event(String desc, String from, String to) {
             return new Command(CommandType.EVENT, desc, null, from, to, -1);
         }
 
+        /**
+         * Creates an event command with the given description and time range.
+         *
+         * @param type
+         * @param idx
+         * @return
+         */
         public static Command indexCmd(CommandType type, int idx) {
             return new Command(type, null, null, null, null, idx);
         }
     }
 
+    /**
+     * Parses raw user input into a structured command.
+     *
+     * @param input
+     * @param taskCount
+     * @return
+     * @throws TyroneException
+     */
     public static Command parse(String input, int taskCount) throws TyroneException {
         String trimmed = input.trim();
 
@@ -59,7 +102,6 @@ public class Parser {
             return Command.simple(CommandType.LIST);
         }
 
-        // todo <desc>
         if (trimmed.equals("todo") || trimmed.startsWith("todo ")) {
             String desc = trimmed.length() == 4 ? "" : trimmed.substring(5).trim();
             if (desc.isEmpty()) {
@@ -68,7 +110,6 @@ public class Parser {
             return Command.todo(desc);
         }
 
-        // deadline <desc> /by yyyy-mm-dd
         if (trimmed.equals("deadline") || trimmed.startsWith("deadline ")) {
             int byPos = trimmed.indexOf(" /by ");
             if (byPos == -1) {
@@ -118,19 +159,16 @@ public class Parser {
             return Command.event(desc, from, to);
         }
 
-        // mark <index>
         if (trimmed.startsWith("mark ")) {
             int idx = parseIndex(trimmed.substring(5), taskCount);
             return Command.indexCmd(CommandType.MARK, idx);
         }
 
-        // unmark <index>
         if (trimmed.startsWith("unmark ")) {
             int idx = parseIndex(trimmed.substring(7), taskCount);
             return Command.indexCmd(CommandType.UNMARK, idx);
         }
 
-        // delete <index>
         if (trimmed.startsWith("delete ")) {
             int idx = parseIndex(trimmed.substring(7), taskCount);
             return Command.indexCmd(CommandType.DELETE, idx);
@@ -139,6 +177,14 @@ public class Parser {
         throw new TyroneException("I'm sorry, but I don't know what that means.");
     }
 
+    /**
+     * Converts a 1-based task number string into a validated 0-based index.
+     *
+     * @param raw
+     * @param taskCount
+     * @return
+     * @throws TyroneException
+     */
     private static int parseIndex(String raw, int taskCount) throws TyroneException {
         String s = raw.trim();
         if (s.isEmpty()) {

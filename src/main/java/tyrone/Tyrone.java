@@ -8,12 +8,20 @@ public class Tyrone {
     private final Storage storage;
     private final TaskList tasks;
 
+    /**
+     * Creates a Tyrone instance that loads/saves tasks from the given file.
+     *
+     * @param filePath
+     */
     public Tyrone(Path filePath) {
         this.ui = new Ui();
         this.storage = new Storage(filePath);
         this.tasks = new TaskList(storage.load());
     }
 
+    /**
+     * Starts the chatbot and handles user commands until exit.
+     */
     public void run() {
         ui.showWelcome();
 
@@ -81,6 +89,11 @@ public class Tyrone {
         }
     }
 
+    /**
+     * Launches the chatbot using the default data file path.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         Path dataPath = Paths.get("data", "tyrone.txt");
         new Tyrone(dataPath).run();
