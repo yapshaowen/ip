@@ -15,6 +15,9 @@ public class Ui {
         System.out.println(LINE);
     }
 
+    /**
+     * Displays the greeting message on startup.
+     */
     public void showWelcome() {
         String logo =
                 " _______   ______   ___  _   _ _____ \n"
@@ -28,22 +31,40 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Reads one command line from the user.
+     *
+     * @return
+     */
     public String readCommand() {
         return sc.nextLine().trim();
     }
 
+    /**
+     * Displays the exit message.
+     */
     public void showBye() {
         showLine();
         System.out.println("Bye bro!");
         showLine();
     }
 
+    /**
+     * Displays an error message to the user.
+     *
+     * @param msg
+     */
     public void showError(String msg) {
         showLine();
         System.out.println("BROOOO!!!! " + msg);
         showLine();
     }
 
+    /**
+     * Displays all tasks currently in the list.
+     *
+     * @param taskList
+     */
     public void showList(TaskList taskList) {
         showLine();
         System.out.println("Here are your tasks bro:");
@@ -53,6 +74,12 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays confirmation after adding a task.
+     *
+     * @param task
+     * @param count
+     */
     public void showAdd(Task task,int count) {
         showLine();
         System.out.println("Gotchu bro! I added this task:");
@@ -61,6 +88,11 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays confirmation after marking a task.
+     *
+     * @param task
+     */
     public void showMark(Task task) {
         showLine();
         System.out.println("Nice! I marked this task as done bro:");
@@ -68,6 +100,11 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays confirmation after marking a task.
+     *
+     * @param task
+     */
     public void showUnmark(Task task) {
         showLine();
         System.out.println("Aight, I unmarked this task bro:");
@@ -75,6 +112,12 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Displays confirmation after deleting a task.
+     *
+     * @param removed
+     * @param count
+     */
     public void showDelete(Task removed, int count) {
         showLine();
         System.out.println("Aight, I marked this task as not done yet: ");
@@ -83,6 +126,9 @@ public class Ui {
         showLine();
     }
 
+    /**
+     * Releases UI resources (e.g., closes the scanner).
+     */
     public void close() {
         sc.close();
     }

@@ -5,38 +5,83 @@ import java.util.ArrayList;
 public class TaskList {
     private final ArrayList<Task> tasks;
 
+    /**
+     * Ensures the data directory and file exist before reading/writing.
+     */
     public TaskList() {
         this.tasks = new ArrayList<>();
     }
 
+    /**
+     * Creates an empty task list.
+     *
+     * @param tasks
+     */
     public TaskList(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
 
+    /**
+     * Creates a task list from an initial collection of tasks.
+     *
+     * @return
+     */
     public int size() {
         return tasks.size();
     }
 
+    /**
+     * Returns the task at the given index.
+     *
+     * @param index
+     * @return
+     */
     public Task get(int index) {
         return tasks.get(index);
     }
 
+    /**
+     * Returns the backing list for saving purposes.
+     *
+     * @param task
+     */
     public void add(Task task) {
         tasks.add(task);
     }
 
+    /**
+     * Adds a task to the list.
+     *
+     * @param index
+     * @return
+     */
     public Task remove(int index) {
         return tasks.remove(index);
     }
 
+    /**
+     * Marks the task at the given index as done.
+     *
+     * @param index
+     */
     public void mark(int index) {
         tasks.get(index).mark();
     }
 
+    /**
+     * Marks the task at the given index as not done.
+     *
+     * @param index
+     */
     public void unmark(int index) {
         tasks.get(index).unmark();
     }
 
+    /**
+     * Returns the backing list for saving purposes.
+     *
+     * @return
+     */
     public ArrayList<Task> getTasks() {
         return tasks;
     }
