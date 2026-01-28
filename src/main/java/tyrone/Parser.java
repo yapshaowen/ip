@@ -1,3 +1,5 @@
+package tyrone;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
@@ -140,19 +142,19 @@ public class Parser {
     private static int parseIndex(String raw, int taskCount) throws TyroneException {
         String s = raw.trim();
         if (s.isEmpty()) {
-            throw new TyroneException("Task number cannot be empty.");
+            throw new TyroneException("tyrone.Task number cannot be empty.");
         }
 
         final int oneBased;
         try {
             oneBased = Integer.parseInt(s);
         } catch (NumberFormatException e) {
-            throw new TyroneException("Task number must be a number.");
+            throw new TyroneException("tyrone.Task number must be a number.");
         }
 
         int idx = oneBased - 1;
         if (idx < 0 || idx >= taskCount) {
-            throw new TyroneException("Task number out of range. Use 1 to " + taskCount + ".");
+            throw new TyroneException("tyrone.Task number out of range. Use 1 to " + taskCount + ".");
         }
         return idx;
     }

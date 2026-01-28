@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+package tyrone;
+
 import java.util.Scanner;
 
 public class Ui {
