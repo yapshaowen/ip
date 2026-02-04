@@ -99,4 +99,20 @@ public class TaskList {
     public ArrayList<Task> getTasks() {
         return tasks;
     }
+
+    @Override
+    public String toString() {
+        if (tasks.isEmpty()) {
+            return "No tasks yet bro.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append(i + 1).append(". ").append(tasks.get(i));
+            if (i < tasks.size() - 1) {
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
+    }
 }
