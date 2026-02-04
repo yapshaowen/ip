@@ -46,37 +46,37 @@ public class Tyrone {
 
                     case TODO:
                         tasks.add(new Todo(cmd.description));
-                        storage.save(tasks.tasks());
+                        storage.save(tasks.getTasks());
                         ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
                         break;
 
                     case DEADLINE:
                         tasks.add(new Deadline(cmd.description, cmd.by));
-                        storage.save(tasks.tasks());
+                        storage.save(tasks.getTasks());
                         ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
                         break;
 
                     case EVENT:
                         tasks.add(new Event(cmd.description, cmd.from, cmd.to));
-                        storage.save(tasks.tasks());
+                        storage.save(tasks.getTasks());
                         ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
                         break;
 
                     case MARK:
                         tasks.mark(cmd.index);
-                        storage.save(tasks.tasks());
+                        storage.save(tasks.getTasks());
                         ui.showMark(tasks.get(cmd.index));
                         break;
 
                     case UNMARK:
                         tasks.unmark(cmd.index);
-                        storage.save(tasks.tasks());
+                        storage.save(tasks.getTasks());
                         ui.showUnmark(tasks.get(cmd.index));
                         break;
 
                     case DELETE:
                         Task removed = tasks.remove(cmd.index);
-                        storage.save(tasks.tasks());
+                        storage.save(tasks.getTasks());
                         ui.showDelete(removed, tasks.size());
                         break;
 
@@ -93,6 +93,65 @@ public class Tyrone {
             }
         }
     }
+
+    public String getResponse(String input) {
+        try {
+            Parser.Command cmd = Parser.parse(input, tasks.size());
+
+            switch (cmd.type) {
+                case BYE:
+                    return "bye";
+
+                case LIST:
+                    return tasks.toString();
+
+                case TODO:
+                    tasks.add(new Todo(cmd.description));
+                    storage.save(tasks.getTasks());
+                    return "Gotchu bro! I added this task:\n  " + tasks.get(tasks.size() - 1)
+                            + "\nNow you got " + tasks.size() + " tasks in yo list bro";
+
+                case DEADLINE:
+                    tasks.add(new Deadline(cmd.description, cmd.by));
+                    storage.save(tasks.getTasks());
+                    return "Gotchu bro! I added this task:\n  " + tasks.get(tasks.size() - 1)
+                            + "\nNow you got " + tasks.size() + " tasks in yo list bro";
+
+                case EVENT:
+                    tasks.add(new Event(cmd.description, cmd.from, cmd.to));
+                    storage.save(tasks.getTasks());
+                    return "Gotchu bro! I added this task:\n  " + tasks.get(tasks.size() - 1)
+                            + "\nNow you got " + tasks.size() + " tasks in yo list bro";
+
+                case MARK:
+                    tasks.mark(cmd.index);
+                    storage.save(tasks.getTasks());
+                    return "Aight, marked:\n  " + tasks.get(cmd.index);
+
+                case UNMARK:
+                    tasks.unmark(cmd.index);
+                    storage.save(tasks.getTasks());
+                    return "Aight, unmarked:\n  " + tasks.get(cmd.index);
+
+                case DELETE:
+                    Task removed = tasks.remove(cmd.index);
+                    storage.save(tasks.getTasks());
+                    return "Removed:\n  " + removed
+                            + "\nNow you got " + tasks.size() + " tasks in yo list bro";
+
+                case FIND:
+                    TaskList matches = tasks.find(cmd.keyword);
+                    return matches.toString();
+
+                default:
+                    return "Unknown command.";
+            }
+
+        } catch (TyroneException e) {
+            return e.getMessage();
+        }
+    }
+
 
     /**
      * Launches the chatbot using the default data file path.
