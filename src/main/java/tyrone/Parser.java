@@ -200,14 +200,14 @@ public class Parser {
      * @throws TyroneException
      */
     private static int parseIndex(String raw, int taskCount) throws TyroneException {
-        String s = raw.trim();
-        if (s.isEmpty()) {
+        String input = raw.trim();
+        if (input.isEmpty()) {
             throw new TyroneException("tyrone.Task number cannot be empty.");
         }
 
         final int oneBased;
         try {
-            oneBased = Integer.parseInt(s);
+            oneBased = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             throw new TyroneException("tyrone.Task number must be a number.");
         }

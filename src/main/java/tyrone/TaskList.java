@@ -6,14 +6,14 @@ public class TaskList {
     private final ArrayList<Task> tasks;
 
     /**
-     * Ensures the data directory and file exist before reading/writing.
+     * Creates an empty task list.
      */
     public TaskList() {
         this.tasks = new ArrayList<>();
     }
 
     /**
-     * Creates an empty task list.
+     * Creates a task list from an initial collection of tasks.
      *
      * @param tasks
      */
@@ -22,7 +22,7 @@ public class TaskList {
     }
 
     /**
-     * Creates a task list from an initial collection of tasks.
+     * Returns the size of the task list.
      *
      * @return
      */
@@ -41,7 +41,7 @@ public class TaskList {
     }
 
     /**
-     * Returns the backing list for saving purposes.
+     * Adds a task to the list.
      *
      * @param task
      */
@@ -50,7 +50,7 @@ public class TaskList {
     }
 
     /**
-     * Adds a task to the list.
+     * Removes a task from the list.
      *
      * @param index
      * @return
@@ -78,11 +78,9 @@ public class TaskList {
     }
 
     /**
-     * Returns the backing list for saving purposes.
+     * Finds a task based on the keyword.
      *
      * @return
-     *
-     * Returns a new TaskList containing tasks whose descriptions contain the keyword.
      */
     public TaskList find(String keyword) {
         String key = keyword.toLowerCase();

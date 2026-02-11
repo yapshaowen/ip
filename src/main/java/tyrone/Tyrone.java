@@ -35,58 +35,58 @@ public class Tyrone {
                 Parser.Command cmd = Parser.parse(input, tasks.size());
 
                 switch (cmd.type) {
-                    case BYE:
-                        ui.showBye();
-                        ui.close();
-                        return;
+                case BYE:
+                    ui.showBye();
+                    ui.close();
+                    return;
 
-                    case LIST:
-                        ui.showList(tasks);
-                        break;
+                case LIST:
+                    ui.showList(tasks);
+                    break;
 
-                    case TODO:
-                        tasks.add(new Todo(cmd.description));
-                        storage.save(tasks.getTasks());
-                        ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
-                        break;
+                case TODO:
+                    tasks.add(new Todo(cmd.description));
+                    storage.save(tasks.getTasks());
+                    ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
+                    break;
 
-                    case DEADLINE:
-                        tasks.add(new Deadline(cmd.description, cmd.by));
-                        storage.save(tasks.getTasks());
-                        ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
-                        break;
+                case DEADLINE:
+                    tasks.add(new Deadline(cmd.description, cmd.by));
+                    storage.save(tasks.getTasks());
+                    ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
+                    break;
 
-                    case EVENT:
-                        tasks.add(new Event(cmd.description, cmd.from, cmd.to));
-                        storage.save(tasks.getTasks());
-                        ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
-                        break;
+                case EVENT:
+                    tasks.add(new Event(cmd.description, cmd.from, cmd.to));
+                    storage.save(tasks.getTasks());
+                    ui.showAdd(tasks.get(tasks.size() - 1), tasks.size());
+                    break;
 
-                    case MARK:
-                        tasks.mark(cmd.index);
-                        storage.save(tasks.getTasks());
-                        ui.showMark(tasks.get(cmd.index));
-                        break;
+                case MARK:
+                    tasks.mark(cmd.index);
+                    storage.save(tasks.getTasks());
+                    ui.showMark(tasks.get(cmd.index));
+                    break;
 
-                    case UNMARK:
-                        tasks.unmark(cmd.index);
-                        storage.save(tasks.getTasks());
-                        ui.showUnmark(tasks.get(cmd.index));
-                        break;
+                case UNMARK:
+                    tasks.unmark(cmd.index);
+                    storage.save(tasks.getTasks());
+                    ui.showUnmark(tasks.get(cmd.index));
+                    break;
 
-                    case DELETE:
-                        Task removed = tasks.remove(cmd.index);
-                        storage.save(tasks.getTasks());
-                        ui.showDelete(removed, tasks.size());
-                        break;
+                case DELETE:
+                    Task removed = tasks.remove(cmd.index);
+                    storage.save(tasks.getTasks());
+                    ui.showDelete(removed, tasks.size());
+                    break;
 
-                    case FIND:
-                        TaskList matches = tasks.find(cmd.keyword);
-                        ui.showFindResults(matches);
-                        break;
+                case FIND:
+                    TaskList matches = tasks.find(cmd.keyword);
+                    ui.showFindResults(matches);
+                    break;
 
-                    default:
-                        throw new TyroneException("Unknown command.");
+                default:
+                    throw new TyroneException("Unknown command.");
                 }
             } catch (TyroneException e) {
                 ui.showError(e.getMessage());
