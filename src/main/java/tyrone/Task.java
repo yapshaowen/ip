@@ -1,8 +1,10 @@
 package tyrone;
 
-public class Task {
+public abstract class Task {
     private final String desc;
     private boolean done;
+
+    public abstract boolean isSameTask(Task task);
 
     /**
      * Creates a task with the given description.

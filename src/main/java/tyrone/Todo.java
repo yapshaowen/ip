@@ -11,6 +11,15 @@ public class Todo extends Task {
         super(desc);
     }
 
+    @Override
+    public boolean isSameTask(Task other) {
+        if (!(other instanceof Todo)) {
+            return false;
+        }
+        Todo task = (Todo) other;
+        return this.getDesc().equalsIgnoreCase(task.getDesc());
+    }
+
     /**
      * Returns the string shown to the user for this task type.
      *

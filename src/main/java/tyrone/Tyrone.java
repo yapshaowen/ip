@@ -107,19 +107,19 @@ public class Tyrone {
                     return tasks.toString();
 
                 case TODO:
-                    tasks.add(new Todo(cmd.description));
+                    tasks.addUnique(new Todo(cmd.description));
                     storage.save(tasks.getTasks());
                     return "Gotchu bro! I added this task:\n  " + tasks.get(tasks.size() - 1)
                             + "\nNow you got " + tasks.size() + " tasks in yo list bro";
 
                 case DEADLINE:
-                    tasks.add(new Deadline(cmd.description, cmd.by));
+                    tasks.addUnique(new Deadline(cmd.description, cmd.by));
                     storage.save(tasks.getTasks());
                     return "Gotchu bro! I added this task:\n  " + tasks.get(tasks.size() - 1)
                             + "\nNow you got " + tasks.size() + " tasks in yo list bro";
 
                 case EVENT:
-                    tasks.add(new Event(cmd.description, cmd.from, cmd.to));
+                    tasks.addUnique(new Event(cmd.description, cmd.from, cmd.to));
                     storage.save(tasks.getTasks());
                     return "Gotchu bro! I added this task:\n  " + tasks.get(tasks.size() - 1)
                             + "\nNow you got " + tasks.size() + " tasks in yo list bro";
