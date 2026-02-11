@@ -100,6 +100,8 @@ public class Parser {
      * @throws TyroneException
      */
     public static Command parse(String input, int taskCount) throws TyroneException {
+        assert input != null: "Parser.parse: input shouldn't be null";
+        assert taskCount >= 0: "Paerser.parse: taskCount should be non-negative";
         String trimmed = input.trim();
 
         if (trimmed.equals("bye")) {
@@ -200,6 +202,8 @@ public class Parser {
      * @throws TyroneException
      */
     private static int parseIndex(String raw, int taskCount) throws TyroneException {
+        assert taskCount >= 0: "parseIndex: taskCount should be non-negative";
+        assert raw != null: "parseIndex: raw index string shouldn't be null";
         String input = raw.trim();
         if (input.isEmpty()) {
             throw new TyroneException("tyrone.Task number cannot be empty.");

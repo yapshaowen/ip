@@ -95,6 +95,7 @@ public class Tyrone {
     }
 
     public String getResponse(String input) {
+        assert input != null: "Tyrone.getResponse: input shouldn't be null";
         try {
             Parser.Command cmd = Parser.parse(input, tasks.size());
 
