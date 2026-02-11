@@ -108,14 +108,14 @@ public class Storage {
         }
 
         String type = parts[0].trim();
-        String doneStr = parts[1].trim();
+        String isDone = parts[1].trim();
         String desc = parts[2].trim();
 
         boolean done;
 
-        if (doneStr.equals("1")) {
+        if (isDone.equals("1")) {
             done = true;
-        } else if (doneStr.equals("0")) {
+        } else if (isDone.equals("0")) {
             done = false;
         } else {
             return null;
