@@ -37,6 +37,7 @@ public class TaskList {
      * @return
      */
     public Task get(int index) {
+        assert index >= 0 && index < tasks.size(): "TaskList.get: index out of bounds";
         return tasks.get(index);
     }
 
@@ -46,6 +47,7 @@ public class TaskList {
      * @param task
      */
     public void add(Task task) {
+        assert task != null: "TaskList.add: task shouldn't be null";
         tasks.add(task);
     }
 
@@ -56,6 +58,7 @@ public class TaskList {
      * @return
      */
     public Task remove(int index) {
+        assert index >= 0 && index < tasks.size(): "TaskList.remove: index out of bounds";
         return tasks.remove(index);
     }
 
@@ -65,6 +68,7 @@ public class TaskList {
      * @param index
      */
     public void mark(int index) {
+        assert index >= 0 && index < tasks.size(): "TaskList.mark: index out of bounds";
         tasks.get(index).mark();
     }
 
@@ -74,6 +78,7 @@ public class TaskList {
      * @param index
      */
     public void unmark(int index) {
+        assert index >= 0 && index < tasks.size(): "TaskList.unmark: index out of bounds";
         tasks.get(index).unmark();
     }
 

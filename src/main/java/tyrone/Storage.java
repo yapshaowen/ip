@@ -12,6 +12,7 @@ public class Storage {
     private final Path filePath;
 
     public Storage(Path filePath) {
+        assert filePath != null: "Storage: filePath shouldn't be null";
         this.filePath = filePath;
     }
 
@@ -21,6 +22,7 @@ public class Storage {
      * @return
      */
     public ArrayList<Task> load() {
+        assert filePath != null: "Storage.load: filePath should not be null";
         ArrayList<Task> tasks = new ArrayList<>();
 
         try {
@@ -53,6 +55,7 @@ public class Storage {
      * @throws TyroneException
      */
     public void save(ArrayList<Task> tasks) throws TyroneException {
+        assert tasks != null: "Storage.save: tasks list shouldn't be null";
         try {
             Path parent = filePath.getParent();
             if (parent != null) {
