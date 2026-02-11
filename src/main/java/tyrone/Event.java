@@ -25,6 +25,17 @@ public class Event extends Task {
         return this.to;
     }
 
+    @Override
+    public boolean isSameTask(Task other) {
+        if (!(other instanceof Event)) {
+            return false;
+        }
+        Event task = (Event) other;
+        return this.getDesc().equalsIgnoreCase(task.getDesc())
+                && this.from.equalsIgnoreCase(task.from)
+                && this.to.equalsIgnoreCase(task.to);
+    }
+
     /**
      * Returns the string shown to the user for this task type.
      *

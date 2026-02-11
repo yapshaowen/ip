@@ -103,6 +103,15 @@ public class TaskList {
         return tasks;
     }
 
+    public void addUnique(Task task) throws TyroneException {
+        for (Task t : this.tasks) {
+            if (t.isSameTask(task)) {
+                throw new TyroneException("This task already exists: " + task);
+            }
+        }
+        this.tasks.add(task);
+    }
+
     @Override
     public String toString() {
         if (tasks.isEmpty()) {
