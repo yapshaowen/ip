@@ -91,64 +91,65 @@ public class Storage {
         throw new TyroneException("Unknown task type can't be saved bro!");
     }
 
+    /**
+     * Parses a single line from the storage file into a task
+     *
+     * @param line
+     * @return
+     */
     private Task parseLine(String line) {
-        if (line == null) {
+        if (line == null || line.trim().isEmpty()) {
             return null;
         }
 
-        String trimmed = line.trim();
-
-        if (trimmed.isEmpty()) {
-            return null;
-        }
-
-        String[] parts = trimmed.split("\\|", -1);
+        String[] parts = line.trim().split("\\|", -1);
         if (parts.length < 3) {
             return null;
         }
 
-        String type = parts[0].trim();
-        String isDone = parts[1].trim();
-        String desc = parts[2].trim();
-
-        boolean done;
-
-        if (isDone.equals("1")) {
-            done = true;
-        } else if (isDone.equals("0")) {
-            done = false;
-        } else {
+        boolean done = parseDone(parts[1]);
+        if (done == false && !parts[1].trim().equals("0")) {
             return null;
         }
 
         try {
-            Task t;
-            if (type.contentEquals("T")) {
-                t = new Todo(desc);
-            } else if (type.equals("D")) {
-                if (parts.length < 4) {
-                    return null;
-                }
-                LocalDate by = LocalDate.parse(parts[3].trim());
-                t = new Deadline(desc, by);
-            } else if (type.equals("E")) {
-                if (parts.length < 5) {
-                    return null;
-                }
-                t = new Event(desc, parts[3].trim(), parts[4].trim());
-            } else {
-                return null;
+            Task task = createTask(parts);
+            if (task != null && done) {
+                task.mark();
             }
-
-            if (done) {
-                t.mark();
-            } else {
-                t.unmark();
-            }
-
-            return t;
+            return task;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    /**
+     * Converts the done flag string into a boolean
+     *
+     * @param flag
+     * @return
+     */
+    private boolean parseDone(String flag) {
+        return flag.trim().equals("1");
+    }
+
+    private Task createTask(String[] parts) {
+        String type = parts[0].trim();
+        String desc = parts[2].trim();
+
+        switch (type) {
+            case "T":
+                return new Todo(desc);
+            case "D":
+                return parts.length >= 4
+                        ? new Deadline(desc, LocalDate.parse(parts[3].trim()))
+                        : null;
+            case "E":
+                return parts.length >= 5
+                        ? new Event(desc, parts[3].trim(), parts[4].trim())
+                        : null;
+            default:
+                return null;
         }
     }
 }

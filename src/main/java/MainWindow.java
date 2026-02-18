@@ -5,6 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.application.Platform;
 import tyrone.Tyrone;
 
 public class MainWindow extends AnchorPane {
@@ -37,7 +38,8 @@ public class MainWindow extends AnchorPane {
         String response = tyrone.getResponse(input);
 
         if ("bye".equals(response)) {
-            userInput.getScene().getWindow().hide();
+            Platform.exit();
+            System.exit(0);
             return;
         }
 

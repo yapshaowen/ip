@@ -1,55 +1,35 @@
-____________________________________________________________
-Wassup dawg? It's ya boy
- _______   ______   ___  _   _ _____
-|_   _\ \ / /  _ \ / _ \| \ | | ____|
-  | |  \ V /| |_) | | | |  \| |  _|
-  | |   | | |  _ <| |_| | |\  | |___
-  |_|   |_| |_| \_\\___/|_| \_|_____|
+<greeting>
 
-Watchu want?
-____________________________________________________________
-____________________________________________________________
-Here are the tasks in your list:
-____________________________________________________________
-____________________________________________________________
-OOPS!!! tyrone.Todo cannot be empty. Use: todo <task>
-____________________________________________________________
-____________________________________________________________
-Gotchu my guy. I added this task:
-  [T][ ] borrow book
-Now you got 1 tasks in yo list
-____________________________________________________________
-____________________________________________________________
-OOPS!!! Invalid deadline bro! Use: deadline <task> /by <time>
-____________________________________________________________
-____________________________________________________________
-Gotchu my guy. I added this task:
-  [D][ ] return book (by: Sunday)
-Now you got 2 tasks in yo list
-____________________________________________________________
-____________________________________________________________
-Gotchu my guy. I added this task:
-  [E][ ] project meeting (from: Mon 2pm to: 4pm)
-Now you got 3 tasks in yo list
-____________________________________________________________
-____________________________________________________________
-OOPS!!! That task number ain't valid. Use 1 to 3.
-____________________________________________________________
-____________________________________________________________
-OOPS!!! tyrone.Task number must be a number, bro.
-____________________________________________________________
-____________________________________________________________
-I gotchu! I've marked this task as done:
-  [D][X] return book (by: Sunday)
-____________________________________________________________
-____________________________________________________________
-Noted. I've removed this task:
-  [E][ ] project meeting (from: Mon 2pm to: 4pm)
-Now you have 2 tasks in the list.
-____________________________________________________________
-____________________________________________________________
-OOPS!!! I ain't understand that. Try: todo, deadline, event, list, mark, unmark, delete, bye
-____________________________________________________________
-____________________________________________________________
-Bye dawg!
-____________________________________________________________
+<add-confirmation for: [T][ ] read book>
+<count shows 1>
+
+<list header>
+1. [T][ ] read book
+
+<add-confirmation for: [D][ ] return book (by: 2026-02-20)>
+<count shows 2>
+
+<add-confirmation for: [E][ ] project meeting (from: 2026-02-20 to: 2026-02-21)>
+<count shows 3>
+
+<mark-confirmation for: [T][X] read book>
+
+<unmark-confirmation for: [T][ ] read book>
+
+<find-results header for keyword "read">
+1. [T][ ] read book
+
+<delete-confirmation removed: [E][ ] project meeting (from: 2026-02-20 to: 2026-02-21)>
+<count shows 2>
+
+<list header>
+1. [T][ ] read book
+2. [D][ ] return book (by: 2026-02-20)
+
+<error: unknown command>
+
+<error: todo missing description>
+
+<error: index out of range>
+
+<bye message>

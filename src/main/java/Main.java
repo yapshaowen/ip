@@ -24,66 +24,97 @@ public class Main extends Application {
 
     private final Tyrone tyrone = new Tyrone(Paths.get("data", "tyrone.txt"));
 
+    /**
+     * Initializes and displays the main GUI window
+     *
+     * @param stage
+     */
     @Override
     public void start(Stage stage) {
-        //Setting up required components
+        initComponents();
+        AnchorPane mainLayout = buildLayout();
+        scene = new Scene(mainLayout);
 
+        stage.setScene(scene);
+        stage.show();
+
+        configureStage(stage, mainLayout);
+        configureLayout(mainLayout);
+        configureHandlers();
+        autoScroll();
+    }
+
+    /**
+     * Creates and initializes the core UI components used by the GUI
+     */
+    private void initComponents() {
         scrollPane = new ScrollPane();
         dialogContainer = new VBox();
         scrollPane.setContent(dialogContainer);
 
         userInput = new TextField();
         sendButton = new Button("Send");
+    }
 
+    /**
+     * Constructs the root layout node for the GUI
+     */
+    private AnchorPane buildLayout() {
         AnchorPane mainLayout = new AnchorPane();
         mainLayout.getChildren().addAll(scrollPane, userInput, sendButton);
+        return mainLayout;
+    }
 
-        scene = new Scene(mainLayout);
-
-        stage.setScene(scene);
-        stage.show();
-
-        //Formatting the window to look as expected
-
+    /**
+     * Configures the main window properties
+     *
+     * @param stage
+     * @param mainLayout
+     */
+    private void configureStage(Stage stage, AnchorPane mainLayout) {
         stage.setTitle("Tyrone");
-        stage.setResizable(false);
+        stage.setResizable(true);
         stage.setMinHeight(600.0);
         stage.setMinWidth(400.0);
+    }
 
-        mainLayout.setPrefSize(400.0, 600.0);
-
-        scrollPane.setPrefSize(385, 535);
+    /**
+     * Configures the sizing, scrolling behaviour of the GUI components
+     *
+     * @param mainLayout
+     */
+    private void configureLayout(AnchorPane mainLayout) {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-
         scrollPane.setVvalue(1.0);
         scrollPane.setFitToWidth(true);
 
-        dialogContainer.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        AnchorPane.setTopAnchor(scrollPane, 10.0);
+        AnchorPane.setLeftAnchor(scrollPane, 10.0);
+        AnchorPane.setRightAnchor(scrollPane, 10.0);
+        AnchorPane.setBottomAnchor(scrollPane, 55.0);
 
-        userInput.setPrefWidth(325.0);
+        AnchorPane.setBottomAnchor(sendButton, 10.0);
+        AnchorPane.setRightAnchor(sendButton, 10.0);
 
-        sendButton.setPrefWidth(55.0);
+        AnchorPane.setLeftAnchor(userInput, 10.0);
+        AnchorPane.setBottomAnchor(userInput, 10.0);
+        AnchorPane.setRightAnchor(userInput, 80.0);
+    }
 
-        AnchorPane.setTopAnchor(scrollPane, 1.0);
+    /**
+     * Attaches event handlers for user input submission
+     */
+    private void configureHandlers() {
+        sendButton.setOnMouseClicked(event -> handleUserInput());
+        userInput.setOnAction(event -> handleUserInput());
+    }
 
-        AnchorPane.setBottomAnchor(sendButton, 1.0);
-        AnchorPane.setRightAnchor(sendButton, 1.0);
-
-        AnchorPane.setLeftAnchor(userInput, 1.0);
-        AnchorPane.setBottomAnchor(userInput, 1.0);
-
-        //Handling user input
-
-        sendButton.setOnMouseClicked((event) -> {
-            handleUserInput();
-        });
-        userInput.setOnAction((event) -> {
-            handleUserInput();
-        });
-
-        //Scroll down to the end every time dialogContainer's height changes.
-        dialogContainer.heightProperty().addListener((observable) -> scrollPane.setVvalue(1.0));
+    /**
+     * Enables auto-scrolling to the bottom of the dialog container
+     */
+    private void autoScroll() {
+        dialogContainer.heightProperty().addListener(observable -> scrollPane.setVvalue(1.0));
     }
 
     /**

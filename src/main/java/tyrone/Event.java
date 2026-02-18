@@ -17,10 +17,20 @@ public class Event extends Task {
         this.to = to;
     }
 
+    /**
+     * Returns the from date of the task
+     *
+     * @return
+     */
     public String getFrom() {
         return this.from;
     }
 
+    /**
+     * Returns the to date of the task
+     *
+     * @return
+     */
     public String getTo() {
         return this.to;
     }

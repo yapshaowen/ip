@@ -1,12 +1,13 @@
+todo read book
 list
-todo
-todo borrow book
-deadline return book Sunday
-deadline return book /by Sunday
-event project meeting /from Mon 2pm /to 4pm
-mark 10
-mark two
-mark 2
+deadline return book /by 2026-02-20
+event project meeting /from 2026-02-20 /to 2026-02-21
+mark 1
+unmark 1
+find read
 delete 3
-blah
+list
+asdfghjkl
+todo
+mark 999
 bye

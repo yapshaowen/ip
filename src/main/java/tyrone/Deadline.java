@@ -23,6 +23,12 @@ public class Deadline extends Task {
         return this.by;
     }
 
+    /**
+     * Checks if two tasks are the same
+     *
+     * @param other
+     * @return
+     */
     @Override
     public boolean isSameTask(Task other) {
         if (!(other instanceof Deadline)) {

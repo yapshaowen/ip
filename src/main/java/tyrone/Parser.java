@@ -92,7 +92,7 @@ public class Parser {
     }
 
     /**
-     * Parses raw user input into a structured command.
+     * Parses user input into a command
      *
      * @param input
      * @param taskCount
@@ -100,97 +100,150 @@ public class Parser {
      * @throws TyroneException
      */
     public static Command parse(String input, int taskCount) throws TyroneException {
-        assert input != null: "Parser.parse: input shouldn't be null";
-        assert taskCount >= 0: "Paerser.parse: taskCount should be non-negative";
+        assert input != null : "Parser.parse: input shouldn't be null";
+        assert taskCount >= 0 : "Parser.parse: taskCount should be non-negative";
+
         String trimmed = input.trim();
 
-        if (trimmed.equals("bye")) {
-            return Command.simple(CommandType.BYE);
-        }
-        if (trimmed.equals("list")) {
-            return Command.simple(CommandType.LIST);
+        Command simple = parseSimple(trimmed);
+        if (simple != null) {
+            return simple;
         }
 
         if (trimmed.equals("find") || trimmed.startsWith("find ")) {
-            String keyword = trimmed.length() == 4 ? "" : trimmed.substring(5).trim();
-            if (keyword.isEmpty()) {
-                throw new TyroneException("The keyword of a find command cannot be empty.");
-            }
-            return Command.find(keyword);
+            return Command.find(parseRequiredArg(trimmed, "find", "The keyword of a find command cannot be empty."));
         }
 
         if (trimmed.equals("todo") || trimmed.startsWith("todo ")) {
-            String desc = trimmed.length() == 4 ? "" : trimmed.substring(5).trim();
-            if (desc.isEmpty()) {
-                throw new TyroneException("The description of a todo cannot be empty.");
-            }
-            return Command.todo(desc);
+            return Command.todo(parseRequiredArg(trimmed, "todo", "The description of a todo cannot be empty."));
         }
 
         if (trimmed.equals("deadline") || trimmed.startsWith("deadline ")) {
-            int byPos = trimmed.indexOf(" /by ");
-            if (byPos == -1) {
-                throw new TyroneException("Invalid deadline format. Use: deadline <task> /by yyyy-mm-dd");
-            }
-
-            String desc = trimmed.substring(9, byPos).trim();
-            String byStr = trimmed.substring(byPos + 5).trim();
-
-            if (desc.isEmpty()) {
-                throw new TyroneException("The description of a deadline cannot be empty.");
-            }
-            if (byStr.isEmpty()) {
-                throw new TyroneException("The /by part of a deadline cannot be empty.");
-            }
-
-            try {
-                LocalDate by = LocalDate.parse(byStr); // expects yyyy-MM-dd
-                return Command.deadline(desc, by);
-            } catch (DateTimeParseException e) {
-                throw new TyroneException("Invalid date format. Use yyyy-mm-dd (e.g., 2019-10-15).");
-            }
+            return parseDeadline(trimmed);
         }
 
         if (trimmed.equals("event") || trimmed.startsWith("event ")) {
-            int fromPos = trimmed.indexOf(" /from ");
-            int toPos = trimmed.indexOf(" /to ");
-            if (fromPos == -1 || toPos == -1 || toPos < fromPos) {
-                throw new TyroneException("Invalid event format. Use: event <task> /from <start> /to <end>");
-            }
-
-            String desc = trimmed.substring(6, fromPos).trim();
-            String from = trimmed.substring(fromPos + 7, toPos).trim();
-            String to = trimmed.substring(toPos + 5).trim();
-
-            if (desc.isEmpty()) {
-                throw new TyroneException("The description of an event cannot be empty.");
-            }
-            if (from.isEmpty()) {
-                throw new TyroneException("The /from part of an event cannot be empty.");
-            }
-            if (to.isEmpty()) {
-                throw new TyroneException("The /to part of an event cannot be empty.");
-            }
-
-            return Command.event(desc, from, to);
+            return parseEvent(trimmed);
         }
 
-        if (trimmed.startsWith("mark ")) {
-            int idx = parseIndex(trimmed.substring(5), taskCount);
-            return Command.indexCmd(CommandType.MARK, idx);
-        }
-
-        if (trimmed.startsWith("unmark ")) {
-            int idx = parseIndex(trimmed.substring(7), taskCount);
-            return Command.indexCmd(CommandType.UNMARK, idx);
-        }
-
-        if (trimmed.startsWith("delete ")) {
-            int idx = parseIndex(trimmed.substring(7), taskCount);
-            return Command.indexCmd(CommandType.DELETE, idx);
+        Command idxCmd = parseIndexCommand(trimmed, taskCount);
+        if (idxCmd != null) {
+            return idxCmd;
         }
 
         throw new TyroneException("I'm sorry, but I don't know what that means.");
+    }
+
+    /**
+     * Parses commands that have no arguments
+     *
+     * @param trimmed
+     * @return
+     */
+    private static Command parseSimple(String trimmed) {
+        switch (trimmed) {
+            case "bye":
+                return Command.simple(CommandType.BYE);
+            case "list":
+                return Command.simple(CommandType.LIST);
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Extracts a required argument after a command word
+     *
+     * @param trimmed
+     * @param keyword
+     * @param emptyMsg
+     * @return
+     * @throws TyroneException
+     */
+    private static String parseRequiredArg(String trimmed, String keyword, String emptyMsg) throws TyroneException {
+        String arg = trimmed.length() == keyword.length() ? "" : trimmed.substring(keyword.length() + 1).trim();
+        if (arg.isEmpty()) {
+            throw new TyroneException(emptyMsg);
+        }
+        return arg;
+    }
+
+    /**
+     * Parses a deadline command
+     *
+     * @param trimmed
+     * @return
+     * @throws TyroneException
+     */
+    private static Command parseDeadline(String trimmed) throws TyroneException {
+        int byPos = trimmed.indexOf(" /by ");
+        if (byPos == -1) {
+            throw new TyroneException("Invalid deadline format. Use: deadline <task> /by yyyy-mm-dd");
+        }
+
+        String desc = trimmed.substring("deadline".length() + 1, byPos).trim();
+        String byStr = trimmed.substring(byPos + " /by ".length()).trim();
+
+        if (desc.isEmpty()) {
+            throw new TyroneException("The description of a deadline cannot be empty.");
+        }
+        if (byStr.isEmpty()) {
+            throw new TyroneException("The /by part of a deadline cannot be empty.");
+        }
+
+        try {
+            return Command.deadline(desc, LocalDate.parse(byStr));
+        } catch (DateTimeParseException e) {
+            throw new TyroneException("Invalid date format. Use yyyy-mm-dd (e.g., 2019-10-15).");
+        }
+    }
+
+    /**
+     * Parses an event command
+     */
+    private static Command parseEvent(String trimmed) throws TyroneException {
+        int fromPos = trimmed.indexOf(" /from ");
+        int toPos = trimmed.indexOf(" /to ");
+        if (fromPos == -1 || toPos == -1 || toPos < fromPos) {
+            throw new TyroneException("Invalid event format. Use: event <task> /from <start> /to <end>");
+        }
+
+        String desc = trimmed.substring("event".length() + 1, fromPos).trim();
+        String from = trimmed.substring(fromPos + " /from ".length(), toPos).trim();
+        String to = trimmed.substring(toPos + " /to ".length()).trim();
+
+        if (desc.isEmpty()) {
+            throw new TyroneException("The description of an event cannot be empty.");
+        }
+        if (from.isEmpty()) {
+            throw new TyroneException("The /from part of an event cannot be empty.");
+        }
+        if (to.isEmpty()) {
+            throw new TyroneException("The /to part of an event cannot be empty.");
+        }
+
+        return Command.event(desc, from, to);
+    }
+
+    /**
+     * Parses commands that require an index
+     *
+     * @param trimmed
+     * @param taskCount
+     * @return
+     * @throws TyroneException
+     */
+    private static Command parseIndexCommand(String trimmed, int taskCount) throws TyroneException {
+        if (trimmed.startsWith("mark ")) {
+            return Command.indexCmd(CommandType.MARK, parseIndex(trimmed.substring(5), taskCount));
+        }
+        if (trimmed.startsWith("unmark ")) {
+            return Command.indexCmd(CommandType.UNMARK, parseIndex(trimmed.substring(7), taskCount));
+        }
+        if (trimmed.startsWith("delete ")) {
+            return Command.indexCmd(CommandType.DELETE, parseIndex(trimmed.substring(7), taskCount));
+        }
+        return null;
     }
 
     /**
